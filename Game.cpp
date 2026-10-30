@@ -23,7 +23,7 @@ void Game::Reset()
 
 	bricks.clear();
 
-	for (int i = 0; i < 5; ++i)
+	for (int i = 1; i <= 5; ++i)
 	{
 		Box brick;
 		brick.width = 10;
@@ -83,8 +83,22 @@ void Game::Render() const
 	for (const Box& brick : bricks)
 	{
 		brick.Draw();
+		
 	}
 	
+	if (bricks.empty())
+	{
+		Console::ForegroundColor(ConsoleColor::White);
+		Console::SetCursorPosition((WINDOW_WIDTH - 30) / 2, WINDOW_HEIGHT / 2);
+		std::cout << "YOU WIN! PRESS R TO RESET";
+
+	}
+	else if (ball.y_position >= WINDOW_HEIGHT - 1)
+	{
+		Console::ForegroundColor(ConsoleColor::White);
+		Console::SetCursorPosition((WINDOW_WIDTH - 31) / 2, WINDOW_HEIGHT / 2);
+		std::cout << "YOU LOSE! PRESS R TO RESET";
+	}
 	Console::Lock(false);
 }
 
@@ -102,7 +116,7 @@ void Game::CheckCollision()
 			if (bricks[i].color == ConsoleColor::Black)
 			{
 				bricks.erase(bricks.begin() + i);
-				--i; // Adjust index after erasing
+				
 			}
 			break; // Exit the loop after handling collision with one brick
 		}
@@ -116,6 +130,17 @@ void Game::CheckCollision()
 	{
 		ball.y_velocity *= -1;
 	}
+	if (bricks.empty())
+	{
+		ball.moving = false;
+	}
+	
+	
+	
 
 	// TODO #7 - If ball touches bottom of window, pause ball and display (render) defeat text with R to reset
+	if (ball.y_position >= WINDOW_HEIGHT - 1)
+	{
+		ball.moving = false;
+	}
 }
